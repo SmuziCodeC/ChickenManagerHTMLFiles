@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>None</title>
     <style>
         body, html {
             height: 100%;
@@ -11,6 +10,7 @@
             justify-content: center;
             align-items: center;
             background-color: #f0f0f0;
+            overflow: hidden;
         }
         textarea {
             width: 100%;
@@ -21,6 +21,47 @@
     </style>
 </head>
 <body>
-    <textarea placeholder="Enter your text here..."></textarea>
+    <textarea placeholder="Enter your text here...">using Photon.Pun;
+using UnityEngine;
+
+public class ChickenGunServer : MonoBehaviourPunCallbacks
+{
+    void Start()
+    {
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Connected to Master");
+        PhotonNetwork.JoinLobby();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("Joined Lobby");
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log("No random room available, creating a new one.");
+        PhotonNetwork.CreateRoom(null, new Photon.Realtime.RoomOptions { MaxPlayers = 4 });
+    }
+
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("Joined Room: " + PhotonNetwork.CurrentRoom.Name);
+        // Instantiate player prefab here
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+    }
+}</textarea>
 </body>
 </html>
